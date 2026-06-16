@@ -33,7 +33,8 @@ class TransformerBlock(nn.Module):
         self.norm2 = nn.RMSNorm(config["hidden_size"], eps=config["rms_norm_eps"])
 
     def __call__(self, x, mask):
-        x = x + self.attn(self.norm1(x), self.norm1(x), mask)
+        # Correct call: MultiHeadAttention(q, k, v, mask) all same for self-attention
+        x = x + self.attn(self.norm1(x), self.norm1(x), self.norm1(x), mask)
         x = x + self.mlp(self.norm2(x))
         return x
 
@@ -50,7 +51,10 @@ class SwahiliLLM(nn.Module):
         batch_size, seq_len = input_ids.shape
         pos = mx.arange(seq_len)[None]
         x = self.embed(input_ids) + self.pos_embed(pos)
-        mask = nn.MultiHeadAttention.create_causal_mask(seq_len)
+        # Mask exactly matches current sequence length
+        mask = mx.tri(seq_len, seq_len)
+        mask = mask.reshape(1, 1, seq_len, seq_len)
+        mask = mask.astype(mx.bool_)
         for layer in self.layers:
             x = layer(x, mask)
         x = self.norm(x)
@@ -65,13 +69,12 @@ def tokenize_function(examples):
 
 dataset = load_dataset("json", data_files="full_dataset.jsonl", split="train")
 dataset = dataset.map(tokenize_function, batched=True, remove_columns=["text"])
-dataset.set_format("numpy")
 
 # --------------------------
-# INITIALIZE MODEL (RANDOM WEIGHTS = FROM SCRATCH!)
+# INITIALIZE MODEL
 # --------------------------
 model = SwahiliLLM(config)
-mx.eval(model.parameters())  # Random initialization  NO PRE-TRAINED WEIGHTS
+mx.eval(model.parameters())
 
 optimizer = AdamW(learning_rate=3e-4, weight_decay=0.01)
 
@@ -90,21 +93,25 @@ def loss_fn(model, input_ids):
 
 loss_and_grad = nn.value_and_grad(model, loss_fn)
 
-print("🚀 Training from scratch started...")
+print("Training from scratch started...")
 for epoch in range(EPOCHS):
     total_loss = 0
     for i in tqdm(range(0, len(dataset), BATCH_SIZE)):
         batch = dataset[i:i+BATCH_SIZE]["input_ids"]
-        batch = mx.array([seq[:SEQ_LEN] for seq in batch])
+        batch_padded = []
+        for seq in batch:
+            if len(seq) >= SEQ_LEN:
+                batch_padded.append(seq[:SEQ_LEN])
+            else:
+                batch_padded.append(seq + [tokenizer.pad_id()] * (SEQ_LEN - len(seq)))
+        batch = mx.array(batch_padded)
         loss, grads = loss_and_grad(model, batch)
         optimizer.update(model, grads)
         mx.eval(model.parameters(), optimizer.state)
         total_loss += loss.item()
 
-    print(f" Epoch {epoch+1}/{EPOCHS} | Loss: {total_loss/len(dataset):.4f}")
-    # Save checkpoint
+    print(f"Epoch {epoch+1}/{EPOCHS} | Loss: {total_loss/len(dataset):.4f}")
     model.save_weights(f"model_epoch_{epoch+1}.npz")
 
-# Save final model
 model.save_weights("swahili_llm_final.npz")
-print(" Training complete! Model saved.")
+print("Training complete! Model saved.")
