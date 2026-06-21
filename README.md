@@ -1,18 +1,17 @@
 <p align="center">
     <a href="#"><img src="https://img.shields.io/badge/status-active-brightgreen.svg"></a>
     <a href="#"><img src="https://img.shields.io/badge/MLX-Framework-orange.svg"></a>
-    <a href="#"><img src="https://img.shields.io/badge/Model-120M--params-blue.svg"></a>
-    <a href="#"><img src="https://img.shields.io/badge/License-Research--NonCommercial-red.svg"></a>
 </p>
 
 <p align="center">
-    <a href="https://antera.co.tz"><img src="https://img.shields.io/badge/Website-antera.co.tz-blue.svg"></a>
     <a href="https://sheddydev.netlify.app"><img src="https://img.shields.io/badge/Blog-sheddydev.netlify.app-purple.svg"></a>
     <a href="https://sheddysilicon.netlify.app"><img src="https://img.shields.io/badge/Author-sheddysilicon.netlify.app-green.svg"></a>
     <a href="mailto:mwalyangashadrack@gmail.com"><img src="https://img.shields.io/badge/Email-mwalyangashadrack%40gmail.com-red.svg"></a>
 </p>
 
-![Banner](https://capsule-render.vercel.app/api?type=venom&height=200&color=0:FA520F,100:000000&text=Kiswahili%20LLM&textBg=false&desc=Kiswahili%20Language%20Model%20Built%20From%20Scratch&descAlign=75&fontAlign=50&descAlignY=70&fontColor=ffffff)
+<p align="center">
+    <img src="/img/shot-1.png" alt="screenshot" width="800">
+</p>
 
 
 This project presents a complete implementation of a language model built entirely from scratch, designed specifically for the mixed-language communication style used across East Africa commonly referred to as KiswaEnglish. This form of speech naturally blends Kiswahili and English in daily conversation, a pattern rarely supported well by standard global language models.
