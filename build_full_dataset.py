@@ -1,7 +1,7 @@
 """
 Build Full Dataset
 Synthetic data: 30%
-Swahili Corpus, Crawled:70%
+Swahili Corpus: 70%
 Author: Shadrackovsky
 """
 
@@ -21,7 +21,6 @@ SYNTHETIC_RATIO = 0.3
 REAL_RATIO = 0.7
 OUTPUT_FILE = "full_dataset.jsonl"
 CORPUS_DIR = "./Swahili_Corpus"
-CRAWLED_DIR = "./Crawled_Data"
 
 
 def load_txt_files(folder):
@@ -63,10 +62,9 @@ if __name__ == "__main__":
             text = generate_reasoning_text()
         synthetic_data.append({"text": text})
 
-    print("\nLoading Corpus, Crawled data.")
+    print("\nLoading Swahili Corpus data")
     real_data = []
     real_data.extend(load_txt_files(CORPUS_DIR))
-    real_data.extend(load_txt_files(CRAWLED_DIR))
 
     print(f"Loaded {len(real_data)} real samples")
 
@@ -85,4 +83,4 @@ if __name__ == "__main__":
     print("\nDataset is ready.")
     print(f"Total samples: {len(final_data)}")
     print(f"Synthetic: {len(synthetic_data)} ({len(synthetic_data)/len(final_data)*100:.1f}%)")
-    print(f"Corpus: {len(real_data)} ({len(real_data)/len(final_data)*100:.1f}%)")
+    print(f"Swahili Corpus: {len(real_data)} ({len(real_data)/len(final_data)*100:.1f}%)")
