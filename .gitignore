@@ -27,7 +27,6 @@ model_epoch_*.npz
 
 # Data folders
 Swahili_Corpus/
-Crawled_Data/
 
 # IDE / Editor files
 .vscode/
