@@ -27,7 +27,7 @@ INTERMEDIATE_SIZE = config["intermediate_size"]
 MAX_SEQ_LEN = config["max_seq_len"]
 DROPOUT = config["dropout"]
 LN_EPS = config["layer_norm_epsilon"]
-BLOCK_SIZE = 128
+BLOCK_SIZE = 2048
 
 
 def create_causal_mask(seq_len: int) -> mx.array:
